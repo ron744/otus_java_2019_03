@@ -42,7 +42,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>hw01maven.HelloOtus</mainClass>
+                            <mainClass>HelloOtus</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
