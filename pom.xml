@@ -11,6 +11,8 @@
     <modules>
         <module>hw01maven</module>
         <module>hw02DIYarrayList</module>
+        <module>hw03Annotations</module>
+        <module>Test</module>
     </modules>
 
 
