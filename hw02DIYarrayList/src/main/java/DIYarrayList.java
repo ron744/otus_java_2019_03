@@ -5,7 +5,7 @@ public class DIYarrayList<T> implements List<T> {
     private T[] values;
 
     public DIYarrayList(){
-        values = (T[]) new Object[0];
+        values = (T[]) new Object[10];
     }
 
     public int size() {
@@ -33,7 +33,11 @@ public class DIYarrayList<T> implements List<T> {
             }
 
             public T next() {
-                return values[currentIndex++];
+                try {
+                    return values[currentIndex++];
+                }catch(Exception e){
+                    throw new ArrayIndexOutOfBoundsException();
+                }
             }
         };
     }
@@ -48,11 +52,18 @@ public class DIYarrayList<T> implements List<T> {
 
     public boolean add(T t) {
         try{
-            T[] temp = values;
-            values = (T[]) new Object[temp.length + 1];
-            System.arraycopy(temp, 0, values, 0, temp.length);
-            values[values.length - 1] = t;
-            return true;
+            for(int i = 0; i < values.length; i++){
+                if(values[i] == null){
+                    values[i] = t;
+                    return true;
+                }
+            }
+                T[] temp = values;
+                values = (T[]) new Object[temp.length + 10];
+                System.arraycopy(temp, 0, values, 0, temp.length);
+                values[values.length - 11] = t;
+                return true;
+
 
         }catch(ClassCastException e){
             e.printStackTrace();
@@ -89,11 +100,19 @@ public class DIYarrayList<T> implements List<T> {
     }
 
     public T get(int index) {
-        return values[index];
+        try {
+            return values[index];
+        }catch(Exception e){
+            throw new ArrayIndexOutOfBoundsException();
+        }
     }
 
     public T set(int index, T element) {
-        return values[index] = element;
+        try {
+            return values[index] = element;
+        }catch(Exception e){
+            throw new ArrayIndexOutOfBoundsException();
+        }
     }
 
     public void add(int index, T element) {
