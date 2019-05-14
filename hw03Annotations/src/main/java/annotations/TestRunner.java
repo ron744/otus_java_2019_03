@@ -1,5 +1,6 @@
 package annotations;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 public class TestRunner {
@@ -10,27 +11,36 @@ public class TestRunner {
 
     private static void run(Class<?> testClass){
 
-        Method[] methods = testClass.getDeclaredMethods();
-        for(Method method : methods){
-            if(method.isAnnotationPresent(BeforeEach.class)){
+        Method[] testMethods = testClass.getDeclaredMethods();
+        for(Method testMethod : testMethods){
+            if(testMethod.isAnnotationPresent(Test.class)){
                 try {
-                    method.invoke(testClass);
-                }catch (Exception e){
-                }
-            }
-        }
-        for(Method method : methods){
-            if(method.isAnnotationPresent(Test.class)){
-                try {
-                    method.invoke(testClass);
-                }catch (Exception e){
-                }
-            }
-        }
-        for(Method method : methods){
-            if(method.isAnnotationPresent(AfterEach.class)){
-                try {
-                    method.invoke(testClass);
+                    Constructor<?> constructor = testClass.getConstructor();
+                    Object object = constructor.newInstance();
+                    Method[] beforeMethods = testClass.getDeclaredMethods();
+                    boolean flag = true;
+                    for(Method beforeMethod : beforeMethods){
+                        if(beforeMethod.isAnnotationPresent(BeforeEach.class)){
+                            try {
+                                beforeMethod.invoke(object);
+                            }catch (Exception e){
+                                flag = false;
+                            }
+                        }
+                    }
+                    if (flag)
+                        testMethod.invoke(object);
+
+                    Method[] afterMethods = testClass.getDeclaredMethods();
+                    for(Method afterMethod : afterMethods){
+                        if(afterMethod.isAnnotationPresent(AfterEach.class)){
+                            try {
+                                afterMethod.invoke(object);
+                            }catch (Exception e){
+                            }
+                        }
+                    }
+
                 }catch (Exception e){
                 }
             }
