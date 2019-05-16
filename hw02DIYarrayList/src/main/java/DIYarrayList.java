@@ -2,14 +2,17 @@ import java.util.*;
 
 public class DIYarrayList<T> implements List<T> {
 
+    private static final int DEFAULT_CAPACITY = 10;
+    private static final int GROW_SIZE = 10;
+    private int size = 0;
     private T[] values;
 
     public DIYarrayList(){
-        values = (T[]) new Object[10];
+        values = (T[]) new Object[DEFAULT_CAPACITY];
     }
-    
+
     public int size() {
-        return values.length;
+        return size;
     }
 
     public boolean isEmpty() {
@@ -29,21 +32,23 @@ public class DIYarrayList<T> implements List<T> {
             }
 
             public boolean hasNext() {
-                return currentIndex < values.length;
+                return currentIndex < size;
             }
 
             public T next() {
-                try {
+
+                if (currentIndex < size){
                     return values[currentIndex++];
-                }catch(Exception e){
-                    throw new ArrayIndexOutOfBoundsException();
+                }else{
+                    throw new UnsupportedOperationException();
                 }
+
             }
         };
     }
 
     public Object[] toArray() {
-        return Arrays.copyOf(values, values.length);
+        return Arrays.copyOf(values, size);
     }
 
     public <T1> T1[] toArray(T1[] a) {
@@ -55,16 +60,16 @@ public class DIYarrayList<T> implements List<T> {
             for(int i = 0; i < values.length; i++){
                 if(values[i] == null){
                     values[i] = t;
+                    size++;
                     return true;
                 }
             }
                 T[] temp = values;
-                values = (T[]) new Object[temp.length + 10];
+                values = (T[]) new Object[temp.length + DEFAULT_CAPACITY];
                 System.arraycopy(temp, 0, values, 0, temp.length);
-                values[values.length - 11] = t;
+                values[values.length - GROW_SIZE] = t;
+                size++;
                 return true;
-
-
         }catch(ClassCastException e){
             e.printStackTrace();
         }
@@ -100,11 +105,18 @@ public class DIYarrayList<T> implements List<T> {
     }
 
     public T get(int index) {
-        try {
+
+        if ((index < size) && (index >= 0)){
+            return values[index];
+        }else{
+            throw new ArrayIndexOutOfBoundsException();
+        }
+
+        /*try {
             return values[index];
         }catch(Exception e){
             throw new ArrayIndexOutOfBoundsException();
-        }
+        }*/
     }
 
     public T set(int index, T element) {
@@ -143,7 +155,14 @@ public class DIYarrayList<T> implements List<T> {
 
             @Override
             public T next() {
-                return values[currentIndex++];
+
+                if (currentIndex < size){
+                    return values[currentIndex++];
+                }else{
+                    throw new UnsupportedOperationException();
+                }
+
+                //return values[currentIndex++];
             }
 
             @Override

@@ -15,8 +15,8 @@ public class Main {
             System.out.print(l + " ");
         }
         System.out.println();
-        Collections.copy(collection2, collection1);
 
+        Collections.copy(collection2, collection1);
         Collections.sort(collection2, new Comparator<Integer>() {
             @Override
             public int compare(Integer o1, Integer o2) {
