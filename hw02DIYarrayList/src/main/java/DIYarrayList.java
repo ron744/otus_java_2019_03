@@ -7,7 +7,7 @@ public class DIYarrayList<T> implements List<T> {
     public DIYarrayList(){
         values = (T[]) new Object[10];
     }
-
+    
     public int size() {
         return values.length;
     }
