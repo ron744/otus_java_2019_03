@@ -3,7 +3,7 @@ import java.util.*;
 public class DIYarrayList<T> implements List<T> {
 
     private static final int DEFAULT_CAPACITY = 10;
-    private static final int GROW_SIZE = 10;
+    private static final int GROW_SIZE = DEFAULT_CAPACITY * 2 + 1;
     private int size = 0;
     private T[] values;
 
@@ -37,11 +37,13 @@ public class DIYarrayList<T> implements List<T> {
 
             public T next() {
 
-                if (currentIndex < size){
+                /*if (currentIndex < size){
                     return values[currentIndex++];
-                }else{
+                }*/
+                if (currentIndex >= size){
                     throw new UnsupportedOperationException();
                 }
+                return  values[currentIndex++];
 
             }
         };
@@ -57,19 +59,26 @@ public class DIYarrayList<T> implements List<T> {
 
     public boolean add(T t) {
         try{
-            for(int i = 0; i < values.length; i++){
+            /*for(int i = 0; i < values.length; i++){
                 if(values[i] == null){
                     values[i] = t;
                     size++;
                     return true;
                 }
-            }
+            }*/
+
+            if (values.length > size){
+                values[size] = t;
+                size++;
+                return true;
+            }else {
                 T[] temp = values;
-                values = (T[]) new Object[temp.length + DEFAULT_CAPACITY];
+                values = (T[]) new Object[temp.length + GROW_SIZE];
                 System.arraycopy(temp, 0, values, 0, temp.length);
                 values[values.length - GROW_SIZE] = t;
                 size++;
                 return true;
+            }
         }catch(ClassCastException e){
             e.printStackTrace();
         }
@@ -111,20 +120,14 @@ public class DIYarrayList<T> implements List<T> {
         }else{
             throw new ArrayIndexOutOfBoundsException();
         }
-
-        /*try {
-            return values[index];
-        }catch(Exception e){
-            throw new ArrayIndexOutOfBoundsException();
-        }*/
     }
 
     public T set(int index, T element) {
-        try {
-            return values[index] = element;
-        }catch(Exception e){
+
+        if (index >= size){
             throw new ArrayIndexOutOfBoundsException();
         }
+        return values[index] = element;
     }
 
     public void add(int index, T element) {
@@ -161,8 +164,6 @@ public class DIYarrayList<T> implements List<T> {
                 }else{
                     throw new UnsupportedOperationException();
                 }
-
-                //return values[currentIndex++];
             }
 
             @Override

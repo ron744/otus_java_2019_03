@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -9,7 +10,7 @@ public class Main {
         List<Integer> collection1 = new DIYarrayList<Integer>();
         List<Integer> collection2 = new DIYarrayList<Integer>();
         Collections.addAll(collection1, 459, 92, 7, 9, 3, 90, 4, 2, 8, 34, 3, 444, 6, 89, 12, 0, 34, 41, 55, 78, 18, 1000);
-        Collections.addAll(collection2, 1, 1, 1, 1, 1, 1, 4, 2, 8, 34, 3, 444, 6, 89, 12, 0, 34, 41, 55, 78, 18, 1000);
+        Collections.addAll(collection2, 1, null, 1, 1, 1, 1, 4, 2, 8, 34, 3, 444, 6, 89, 12, 0, 34, 41, 55, 79, 18, 1000);
         System.out.println("Collection2 before change");
         for(Integer l : collection2){
             System.out.print(l + " ");
