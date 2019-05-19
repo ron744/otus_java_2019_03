@@ -59,26 +59,15 @@ public class DIYarrayList<T> implements List<T> {
 
     public boolean add(T t) {
         try{
-            /*for(int i = 0; i < values.length; i++){
-                if(values[i] == null){
-                    values[i] = t;
-                    size++;
-                    return true;
-                }
-            }*/
-
-            if (values.length > size){
-                values[size] = t;
-                size++;
-                return true;
-            }else {
+            if (values.length <= size){
                 T[] temp = values;
                 values = (T[]) new Object[temp.length + GROW_SIZE];
                 System.arraycopy(temp, 0, values, 0, temp.length);
-                values[values.length - GROW_SIZE] = t;
-                size++;
-                return true;
             }
+            values[size] = t;
+            size++;
+            return true;
+
         }catch(ClassCastException e){
             e.printStackTrace();
         }
@@ -114,20 +103,25 @@ public class DIYarrayList<T> implements List<T> {
     }
 
     public T get(int index) {
-
-        if ((index < size) && (index >= 0)){
-            return values[index];
-        }else{
+        /*if ((index >= size) && (index < 0)){
             throw new ArrayIndexOutOfBoundsException();
-        }
+        }*/
+        check(index);
+        return values[index];
     }
 
     public T set(int index, T element) {
+        /*if ((index >= size)&& (index < 0)){
+            throw new ArrayIndexOutOfBoundsException();
+        }*/
+        check(index);
+        return values[index] = element;
+    }
 
-        if (index >= size){
+    private void check(int index){
+        if ((index >= size)&& (index < 0)){
             throw new ArrayIndexOutOfBoundsException();
         }
-        return values[index] = element;
     }
 
     public void add(int index, T element) {
