@@ -5,9 +5,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrepareTest {
+public final class PrepareTestMethodsHelper {
 
-    public List<Method> prepare(Method[] methods, Class<?> clazz){
+    private PrepareTestMethodsHelper(){}
+
+    public static List<Method> prepare(Method[] methods, Class<?> clazz){
 
         List<Method> done = new ArrayList<>();
         for (int i = 0; i < methods.length; i++){

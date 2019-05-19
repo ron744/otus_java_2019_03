@@ -7,7 +7,8 @@ public class AnnotationsTest {
         System.out.println("before test"); }
 
     @Test
-    public void test1() { System.out.println("test1"); }
+    public void test1() {
+        System.out.println("test1"); }
 
     @Test
     public void test2(){

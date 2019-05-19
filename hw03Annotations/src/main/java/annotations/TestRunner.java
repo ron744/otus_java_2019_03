@@ -10,9 +10,9 @@ public class TestRunner {
 
         Method[] testMethods = testClass.getDeclaredMethods();
 
-        List<Method> methodsTest = new PrepareTest().prepare(testMethods, Test.class);
-        List<Method> methodsBefore = new PrepareTest().prepare(testMethods, BeforeEach.class);
-        List<Method> methodsAfter = new PrepareTest().prepare(testMethods, AfterEach.class);
+        List<Method> methodsTest = PrepareTestMethodsHelper.prepare(testMethods, Test.class);
+        List<Method> methodsBefore = PrepareTestMethodsHelper.prepare(testMethods, BeforeEach.class);
+        List<Method> methodsAfter = PrepareTestMethodsHelper.prepare(testMethods, AfterEach.class);
 
         for (Method testMethod : methodsTest){
             try {
@@ -26,8 +26,13 @@ public class TestRunner {
                         flag = false;
                     }
                 }
-                if (flag)
-                    testMethod.invoke(object);
+                if (flag) {
+                    try{
+                        testMethod.invoke(object);
+                    }catch(Exception e){
+
+                    }
+                }
 
                 for (Method afterMethod : methodsAfter){
                     try{
