@@ -17,24 +17,24 @@ public class Demo {
 
     static class MyProxy implements InvocationHandler{
         private final Object target;
-        private Set<Method> set = new HashSet<>();
+        private Set<Method> setMethods = new HashSet<>();
         MyProxy(Object target){
             this.target = target;
             findLog();
         }
 
-        void findLog(){
+        private void findLog(){
             Method[] methods = target.getClass().getDeclaredMethods();
             for (Method method : methods){
                 if (method.isAnnotationPresent(Log.class)){
-                    set.add(method);
+                    setMethods.add(method);
                 }
             }
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            for (Method m : set){
+            for (Method m : setMethods){
                 if (m.getName().equals(method.getName())){
                     Parameter[] parameters = m.getParameters();
                     System.out.println("executed method: " + method.getName());
