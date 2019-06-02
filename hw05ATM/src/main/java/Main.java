@@ -1,20 +1,12 @@
 public class Main {
     public static void main(String[] args) {
-
-        ATM atm = new ATM();
-
-        /*atm.putMoney(1350);
-        atm.getBalance();
-        atm.putMoney(100);
-        atm.getBalance();
-        atm.putMoney(330);
-        atm.getMoney(50);
-        atm.getBalance();
-        atm.getMoney(200);
-        atm.getBalance();
-        atm.putMoney(550);
-        atm.getBalance();
+        ATM atm = new ATM(500, 50, 200, 100);
+        atm.putMoney(100, 5);
+        atm.getMoney(250);
+        atm.putMoney(300, 1);
+        atm.putMoney(500, 2);
         atm.getMoney(950);
-        atm.getBalance();*/
+        System.out.println("Balance: " + atm.balance() + " Rub");
+
     }
 }
