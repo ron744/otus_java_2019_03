@@ -10,11 +10,11 @@ public class Main {
         atm.getMoney(950);
         System.out.println("Balance: " + atm.balance() + " Rub");*/
 
-        atm.putMoney(100, 2);
-        atm.putMoney(50, 2);
+        //atm.putMoney(100, 2);
+        atm.putMoney(50, 1);
         atm.pringCellsStatus();
 
-        atm.getMoney(250);
+        atm.getMoney(50);
         atm.pringCellsStatus();
 
     }

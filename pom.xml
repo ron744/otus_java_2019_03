@@ -14,6 +14,7 @@
         <module>hw03Annotations</module>
         <module>hw04Logging</module>
         <module>hw05ATM</module>
+        <module>hw06ATMDepartment</module>
     </modules>
 
 

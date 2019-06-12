@@ -1,10 +1,9 @@
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-public class ATM {
+public class ATM implements ChainOfResponsibility{
     private List<MoneyCell> moneyCells;
+    private ChainOfResponsibility chain;
 
     /*ATM(int... args){
         for (int i : args){
@@ -14,8 +13,28 @@ public class ATM {
     }*/
     ATM(){
         this.moneyCells = new CasseteBay().getMoneyCells();
+        //save();
     }
 
+    @Override
+    public void nextBalance(ChainOfResponsibility nextChain) {
+            chain = nextChain;
+    }
+
+    @Override
+    public void requestBalance() {
+        System.out.println("Current balance: " + balance());
+        if (chain instanceof ATM)
+            chain.requestBalance();
+    }
+
+    public Save save(){
+
+        return new Save(moneyCells);
+    }
+    public void load(Save save){
+        moneyCells = save.getSaveMoneyCells();
+    }
 
     public void putMoney(int nominal, int count){
         for (MoneyCell r : moneyCells){
@@ -37,7 +56,7 @@ public class ATM {
                     count -= r.getBanknote().getNominel();
                 }
                 r.setCount(-index);
-                System.out.println("Выдано " + index + " купюр наминалом " + r.getBanknote().getNominel());
+                //System.out.println("Выдано " + index + " купюр наминалом " + r.getBanknote().getNominel());
                 index = 0;
             }
             System.out.println("-------------------------------------");
