@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.List;
 
 public class ATM implements ChainOfResponsibility{
@@ -13,7 +12,6 @@ public class ATM implements ChainOfResponsibility{
     }*/
     ATM(){
         this.moneyCells = new CasseteBay().getMoneyCells();
-        //save();
     }
 
     @Override
@@ -30,8 +28,17 @@ public class ATM implements ChainOfResponsibility{
 
     public Save save(){
 
-        return new Save(moneyCells);
+        List<MoneyCell> copy = new CasseteBay().getMoneyCells();
+        int index = 0;
+        for (MoneyCell m : moneyCells){
+
+            int newCount = m.getCount();
+            copy.get(index).setCount(newCount);
+            index++;
+        }
+        return new Save(copy);
     }
+
     public void load(Save save){
         moneyCells = save.getSaveMoneyCells();
     }

@@ -1,4 +1,4 @@
-public class Main {
+public class ATMDepartment {
     public static void main(String[] args) {
 
         ATM atm1 = new ATM();
@@ -16,8 +16,9 @@ public class Main {
         atm1.load(careTaker.getSave());
         System.out.println("Main balance: " + atm1.balance());
 
-        //atm1.nextBalance(atm2);
-        //atm2.nextBalance(atm3);
-        //atm1.requestBalance();
+        atm1.nextBalance(atm2);
+        atm2.nextBalance(atm3);
+        atm1.requestBalance();
+
     }
 }

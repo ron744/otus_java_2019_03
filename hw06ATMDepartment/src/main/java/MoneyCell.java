@@ -12,10 +12,6 @@ public class MoneyCell {
         return banknote;
     }
 
-    /*public void setBanknote(Banknote banknote) {
-        this.banknote = banknote;
-    }*/
-
     public int getCount() {
         return count;
     }
@@ -23,4 +19,5 @@ public class MoneyCell {
     public void setCount(int count) {
         this.count += count;
     }
+
 }
