@@ -1,24 +1,25 @@
 public class ATMDepartment {
     public static void main(String[] args) {
 
-        ATM atm1 = new ATM();
-        ATM atm2 = new ATM();
-        ATM atm3 = new ATM();
+        Department department = new Department();
+        department.addATM(new ATM());
+        department.addATM(new ATM());
+        department.addATM(new ATM());
 
-        atm1.putMoney(100, 2);
-        CareTaker careTaker = new CareTaker();
-        careTaker.setSave(atm1.save());
+        department.putMoneyInATM(0, 100, 3);
+        department.putMoneyInATM(1, 200, 1);
+        department.putMoneyInATM(2, 100, 29);
+        CareTaker careTaker1 = new CareTaker();
+        careTaker1.setSave(department.getATM(0).save());
 
-        System.out.println("Main balance: " + atm1.balance());
+        System.out.println("Main balance: " + department.getATM(0).balance());
 
-        atm1.getMoney(100);
+        department.getMoneyFromATM(0, 100);
+        department.getMoneyFromATM(2, 700);
 
-        atm1.load(careTaker.getSave());
-        System.out.println("Main balance: " + atm1.balance());
+        department.getATM(0).load(careTaker1.getSave());
+        System.out.println("Main balance: " + department.getATM(0).balance());
 
-        atm1.nextBalance(atm2);
-        atm2.nextBalance(atm3);
-        atm1.requestBalance();
-
+        department.departmentBalance();
     }
 }

@@ -1,8 +1,8 @@
 import java.util.List;
 
-public class ATM implements ChainOfResponsibility{
+public class ATM implements ChainLink{
     private List<MoneyCell> moneyCells;
-    private ChainOfResponsibility chain;
+    private ChainLink chain;
 
     /*ATM(int... args){
         for (int i : args){
@@ -15,7 +15,7 @@ public class ATM implements ChainOfResponsibility{
     }
 
     @Override
-    public void nextBalance(ChainOfResponsibility nextChain) {
+    public void setNextChainLink(ChainLink nextChain) {
             chain = nextChain;
     }
 
