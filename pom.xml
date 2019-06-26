@@ -15,6 +15,8 @@
         <module>hw04Logging</module>
         <module>hw05ATM</module>
         <module>hw06ATMDepartment</module>
+        <module>hw07Gson</module>
+        <module>hw08executor</module>
     </modules>
 
 
