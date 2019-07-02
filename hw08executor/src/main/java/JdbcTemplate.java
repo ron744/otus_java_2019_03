@@ -12,7 +12,7 @@ public class JdbcTemplate implements DBService{
     }
 
     @Override
-    public void create(Object objectData) throws SQLException {
+    public void createTable(Object objectData) throws SQLException {
 
         Class clazz = objectData.getClass();
         Field[] fields = clazz.getDeclaredFields();
@@ -23,12 +23,12 @@ public class JdbcTemplate implements DBService{
                 String fieldType = "";
 
                 if (fields[i].getAnnotation(ID.class) != null){
-                    fieldType = "int(20) NOT NULL auto_increment";
+                    fieldType = "int(20) NOT NULL AUTO_INCREMENT PRIMARY KEY";
                 }
-                if (fields[i].getAnnotation(stringstring.class) != null){
+                if (fields[i].getAnnotation(TypeString.class) != null){
                     fieldType = "varchar(100)";
                 }
-                if (fields[i].getAnnotation(intint.class) != null){
+                if (fields[i].getAnnotation(TypeInt.class) != null){
                     fieldType = "int(10)";
                 }
                 if (i + 1 == fields.length){
@@ -40,9 +40,70 @@ public class JdbcTemplate implements DBService{
             System.out.println(sqlRequest);
             try (PreparedStatement pst = connection.prepareStatement(sqlRequest)) {
                 pst.executeUpdate();
-
             }
             System.out.println("-----table create-----");
+        }
+    }
+
+    @Override
+    public void insert(Object objectData) throws SQLException{
+        Class clazz = objectData.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        if (fields[0].getAnnotation(ID.class) != null) {
+            String sqlRequest = "insert into " + clazz.getName().toLowerCase() + "(";
+            for (int i = 0; i < fields.length; i++) {
+                String fieldName = fields[i].getName();
+                if (!fieldName.equals("id")){
+                    if (i + 1 == fields.length) {
+                        sqlRequest += fieldName + ") ";
+                    } else {
+                        sqlRequest += fieldName + ", ";
+                    }
+                }
+            }
+            sqlRequest += "values (";
+            for (int i = 0; i < fields.length - 1; i++){
+                if (i + 1 == fields.length - 1){
+                    sqlRequest += "?)";
+                } else {
+                    sqlRequest += "?, ";
+                }
+            }
+
+            System.out.println(sqlRequest);
+
+            try (PreparedStatement pst = connection.prepareStatement(sqlRequest)) {
+                for (int i = 1; i < fields.length; i++){
+
+                    Field field = clazz.getDeclaredField(fields[i].getName());
+                    field.setAccessible(true);
+                    if (fields[i].getAnnotation(ID.class) != null){
+
+                        /*ResultSet rs = pst.getGeneratedKeys();
+                        int idValue = 0;
+                        if (rs.next()) {
+                            idValue = rs.getInt("id");
+                            System.out.println("ID value: ");
+
+                        }
+                        pst.setInt(i , rs.getInt(1));*/
+                    } else {
+                        if (fields[i].getType().getName().equals("int")){
+                            pst.setInt(i, (Integer) field.get(objectData));
+                        }
+
+                        if (fields[i].getType().getName().equals("java.lang.String")){
+                            pst.setString(i, (String) field.get(objectData));
+                        }
+                    }
+                }
+                pst.executeUpdate();
+                //connection.commit();
+
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+            System.out.println("-----table insert-----");
         }
     }
 
@@ -51,40 +112,30 @@ public class JdbcTemplate implements DBService{
         Class clazz = objectData.getClass();
         Field[] fields = clazz.getDeclaredFields();
         if (fields[0].getAnnotation(ID.class) != null) {
-            String sqlRequest = "insert into " + clazz.getName().toLowerCase() + "(";
-            for (int i = 0; i < fields.length; i++) {
-                String fieldName = fields[i].getName();
-                if (i + 1 == fields.length){
-                    sqlRequest += fieldName + ") ";
-                } else {
-                    sqlRequest += fieldName + ", ";
-                }
-            }
-            sqlRequest += "values (";
+            String sqlRequest = "update " + clazz.getName().toLowerCase() + " set ";
             for (int i = 0; i < fields.length; i++){
-                if (i + 1 == fields.length){
-                    sqlRequest += "?)";
-                } else {
-                    sqlRequest += "?, ";
+                String fieldName = fields[i].getName();
+                try {
+                    Field field1 = clazz.getDeclaredField(fields[i].getName());
+                    field1.setAccessible(true);
+                    if (!fieldName.equals("id")) {
+                        if (i + 1 == fields.length) {
+                            sqlRequest += fieldName + " = " + field1.get(objectData) + " WHERE id = ?";
+                        } else {
+                            sqlRequest += fieldName + " = " + field1.get(objectData) + ", ";
+                        }
+                    }
+                }catch (IllegalAccessException | NoSuchFieldException e) {
+                    e.printStackTrace();
                 }
             }
             System.out.println(sqlRequest);
 
+
+
             try (PreparedStatement pst = connection.prepareStatement(sqlRequest)) {
                 Savepoint savepoint = connection.setSavepoint("savePoint");
-                for (int i = 0; i < fields.length; i++){
 
-                    Field field = clazz.getDeclaredField(fields[i].getName());
-                    field.setAccessible(true);
-
-                    if (fields[i].getType().getName().equals("int")){
-                        pst.setInt(i + 1, (Integer) field.get(objectData));
-                    }
-
-                    if (fields[i].getType().getName().equals("java.lang.String")){
-                        pst.setString(i + 1, (String) field.get(objectData));
-                    }
-                }
                 try {
                     int rowCount = pst.executeUpdate();
                     connection.commit();
@@ -94,8 +145,6 @@ public class JdbcTemplate implements DBService{
                     System.out.println(e.getMessage());
                 }
 
-            } catch (IllegalAccessException | NoSuchFieldException e) {
-                e.printStackTrace();
             }
             System.out.println("-----table update-----");
         }
@@ -106,15 +155,16 @@ public class JdbcTemplate implements DBService{
         Class clazz = objectData.getClass();
         Field[] fields = clazz.getDeclaredFields();
         if (fields[0].getAnnotation(ID.class) != null) {
-            String sqlRequest = "select name from " + clazz.getName().toLowerCase() + " where id = ?";
+            //String sqlRequest = "select name from " + clazz.getName().toLowerCase() + " where id = ?";
+            String sqlRequest = "select * from user";
 
             try (PreparedStatement pst = connection.prepareStatement(sqlRequest)) {
-                pst.setInt(1, id);
+                //pst.setInt(1, id);
 
                 try (ResultSet rs = pst.executeQuery()){
                     System.out.print("name: ");
                     if (rs.next()){
-                        System.out.println(rs.getString("name"));
+                        System.out.println(rs.getInt("age"));
                     }
                 }
             }

@@ -2,9 +2,9 @@ public class Account {
 
     @ID
     private int no;
-    @stringstring
+    @TypeString
     private String type;
-    @intint
+    @TypeInt
     private int rest;
 
     public int getNo() {

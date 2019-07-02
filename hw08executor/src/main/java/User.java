@@ -2,9 +2,9 @@ public class User {
 
     @ID
     private int id;
-    @stringstring
+    @TypeString
     private String name;
-    @intint
+    @TypeInt
     private int age;
 
     public int getId() {
