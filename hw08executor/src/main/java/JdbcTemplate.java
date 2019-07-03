@@ -114,7 +114,7 @@ public class JdbcTemplate implements DBService{
 
         if (fields[0].getAnnotation(ID.class) != null) {
             String sqlRequest = "update " + clazz.getName().toLowerCase() + " set ";
-            //try (PreparedStatement pst1 = connection.prepareStatement("select * from " + clazz.getName().toLowerCase())) {
+            try (PreparedStatement pst1 = connection.prepareStatement("select * from " + clazz.getName().toLowerCase())) {
                 for (int i = 0; i < fields.length; i++) {
                     String fieldName = fields[i].getName();
                     try {
@@ -123,6 +123,16 @@ public class JdbcTemplate implements DBService{
                         if (!fieldName.equals("id")) {
                             if (i + 1 == fields.length) {
                                 System.out.println();
+
+                                ResultSet rs = pst1.getGeneratedKeys();
+                                int idValue = 0;
+                                if (rs.next()) {
+                                    idValue = rs.getInt("id");
+                                    System.out.println("ID value: ");
+                                }
+                                //pst1.setInt(i , rs.getInt(1));
+
+
                                 sqlRequest += fieldName + " = " + field1.get(objectData) + " WHERE id = 1";
                             } else {
                                 sqlRequest += fieldName + " = " + "\'" + field1.get(objectData) + "\'" + ", ";
@@ -132,7 +142,7 @@ public class JdbcTemplate implements DBService{
                         e.printStackTrace();
                     }
                 }
-            //}
+            }
             System.out.println(sqlRequest);
 
             try (PreparedStatement pst = connection.prepareStatement(sqlRequest)) {
