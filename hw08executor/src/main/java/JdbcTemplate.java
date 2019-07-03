@@ -156,7 +156,7 @@ public class JdbcTemplate implements DBService{
     public <T> T load(int id, T objectData) throws SQLException {
         Class clazz = objectData.getClass();
         Field[] fields = clazz.getDeclaredFields();
-        T loadObject = null;
+        T loadObject = objectData;
         if (fields[0].getAnnotation(ID.class) != null) {
             String sqlRequest = "select * from " + clazz.getName().toLowerCase() + " where id = " + id;
 
