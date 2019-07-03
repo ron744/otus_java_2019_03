@@ -23,7 +23,7 @@ public class JdbcTemplate implements DBService{
                 String fieldType = "";
 
                 if (fields[i].getAnnotation(ID.class) != null){
-                    fieldType = "int(20) NOT NULL AUTO_INCREMENT PRIMARY KEY";
+                    fieldType = "int(20) NOT NULL AUTO_INCREMENT ";
                 }
                 if (fields[i].getAnnotation(TypeString.class) != null){
                     fieldType = "varchar(100)";
@@ -79,14 +79,14 @@ public class JdbcTemplate implements DBService{
                     field.setAccessible(true);
                     if (fields[i].getAnnotation(ID.class) != null){
 
-                        /*ResultSet rs = pst.getGeneratedKeys();
+                        ResultSet rs = pst.getGeneratedKeys();
                         int idValue = 0;
                         if (rs.next()) {
                             idValue = rs.getInt("id");
                             System.out.println("ID value: ");
 
                         }
-                        pst.setInt(i , rs.getInt(1));*/
+                        pst.setInt(i , rs.getInt(1));
                     } else {
                         if (fields[i].getType().getName().equals("int")){
                             pst.setInt(i, (Integer) field.get(objectData));
@@ -111,27 +111,29 @@ public class JdbcTemplate implements DBService{
     public void update(Object objectData) throws SQLException{
         Class clazz = objectData.getClass();
         Field[] fields = clazz.getDeclaredFields();
+
         if (fields[0].getAnnotation(ID.class) != null) {
             String sqlRequest = "update " + clazz.getName().toLowerCase() + " set ";
-            for (int i = 0; i < fields.length; i++){
-                String fieldName = fields[i].getName();
-                try {
-                    Field field1 = clazz.getDeclaredField(fields[i].getName());
-                    field1.setAccessible(true);
-                    if (!fieldName.equals("id")) {
-                        if (i + 1 == fields.length) {
-                            sqlRequest += fieldName + " = " + field1.get(objectData) + " WHERE id = ?";
-                        } else {
-                            sqlRequest += fieldName + " = " + field1.get(objectData) + ", ";
+            //try (PreparedStatement pst1 = connection.prepareStatement("select * from " + clazz.getName().toLowerCase())) {
+                for (int i = 0; i < fields.length; i++) {
+                    String fieldName = fields[i].getName();
+                    try {
+                        Field field1 = clazz.getDeclaredField(fields[i].getName());
+                        field1.setAccessible(true);
+                        if (!fieldName.equals("id")) {
+                            if (i + 1 == fields.length) {
+                                System.out.println();
+                                sqlRequest += fieldName + " = " + field1.get(objectData) + " WHERE id = 1";
+                            } else {
+                                sqlRequest += fieldName + " = " + "\'" + field1.get(objectData) + "\'" + ", ";
+                            }
                         }
+                    } catch (IllegalAccessException | NoSuchFieldException e) {
+                        e.printStackTrace();
                     }
-                }catch (IllegalAccessException | NoSuchFieldException e) {
-                    e.printStackTrace();
                 }
-            }
+            //}
             System.out.println(sqlRequest);
-
-
 
             try (PreparedStatement pst = connection.prepareStatement(sqlRequest)) {
                 Savepoint savepoint = connection.setSavepoint("savePoint");
@@ -151,23 +153,24 @@ public class JdbcTemplate implements DBService{
     }
 
     @Override
-    public void load(int id, Object objectData) throws SQLException{
+    public <T> T load(int id, T objectData) throws SQLException {
         Class clazz = objectData.getClass();
         Field[] fields = clazz.getDeclaredFields();
+        T loadObject = null;
         if (fields[0].getAnnotation(ID.class) != null) {
-            //String sqlRequest = "select name from " + clazz.getName().toLowerCase() + " where id = ?";
-            String sqlRequest = "select * from user";
+            String sqlRequest = "select * from " + clazz.getName().toLowerCase() + " where id = " + id;
 
             try (PreparedStatement pst = connection.prepareStatement(sqlRequest)) {
-                //pst.setInt(1, id);
 
                 try (ResultSet rs = pst.executeQuery()){
-                    System.out.print("name: ");
                     if (rs.next()){
+                        System.out.println(rs.getInt("id"));
+                        System.out.println(rs.getString("name"));
                         System.out.println(rs.getInt("age"));
                     }
                 }
             }
         }
+        return loadObject;
     }
 }

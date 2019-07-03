@@ -13,6 +13,7 @@ public class H2Demo {
         serviceUser.insert(user);
         user.setAge(10);
         serviceUser.update(user);
-        serviceUser.load(1, user);
+        User loadedUser = serviceUser.load(1, user);
+        System.out.println("loadedUserAge: " + loadedUser.getAge());
     }
 }
