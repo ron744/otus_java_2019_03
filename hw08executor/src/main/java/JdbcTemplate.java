@@ -79,14 +79,7 @@ public class JdbcTemplate implements DBService{
                     field.setAccessible(true);
                     if (fields[i].getAnnotation(ID.class) != null){
 
-                        ResultSet rs = pst.getGeneratedKeys();
-                        int idValue = 0;
-                        if (rs.next()) {
-                            idValue = rs.getInt("id");
-                            System.out.println("ID value: ");
 
-                        }
-                        pst.setInt(i , rs.getInt(1));
                     } else {
                         if (fields[i].getType().getName().equals("int")){
                             pst.setInt(i, (Integer) field.get(objectData));
@@ -145,7 +138,7 @@ public class JdbcTemplate implements DBService{
             }
             System.out.println(sqlRequest);
 
-            try (PreparedStatement pst = connection.prepareStatement(sqlRequest)) {
+            try (PreparedStatement pst = connection.prepareStatement(sqlRequest, Statement.RETURN_GENERATED_KEYS)) {
                 Savepoint savepoint = connection.setSavepoint("savePoint");
 
                 try {
