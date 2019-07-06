@@ -11,10 +11,6 @@ public class Account {
         return no;
     }
 
-    public void setNo(int no) {
-        this.no = no;
-    }
-
     public String getType() {
         return type;
     }
@@ -28,6 +24,11 @@ public class Account {
     }
 
     public void setRest(int rest) {
+        this.rest = rest;
+    }
+
+    public Account(String type, int rest) {
+        this.type = type;
         this.rest = rest;
     }
 }

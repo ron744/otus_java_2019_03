@@ -1,13 +1,11 @@
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 
 public class H2Demo {
 
-    public static void main(String[] args) throws SQLException{
-        User user = new User();
-        //user.setId(1);
-        user.setName("Vasya");
-        user.setAge(9);
-        Account account = new Account();
+    public static void main(String[] args) throws SQLException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
+        User user = new User("Vasya", 9);
+        //Account account = new Account();
         DBService serviceUser = new JdbcTemplate();
         serviceUser.createTable(user);
         serviceUser.insert(user);

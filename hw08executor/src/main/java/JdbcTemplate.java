@@ -1,10 +1,13 @@
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 
 public class JdbcTemplate implements DBService{
 
     private static final String URL = "jdbc:h2:mem:test";
     private final Connection connection;
+    private int idValue;
 
     public JdbcTemplate() throws SQLException{
         this.connection = DriverManager.getConnection(URL);
@@ -72,7 +75,8 @@ public class JdbcTemplate implements DBService{
 
             System.out.println(sqlRequest);
 
-            try (PreparedStatement pst = connection.prepareStatement(sqlRequest)) {
+            try (PreparedStatement pst = connection.prepareStatement(sqlRequest, Statement.RETURN_GENERATED_KEYS)) {
+
                 for (int i = 1; i < fields.length; i++){
 
                     Field field = clazz.getDeclaredField(fields[i].getName());
@@ -82,15 +86,22 @@ public class JdbcTemplate implements DBService{
 
                     } else {
                         if (fields[i].getType().getName().equals("int")){
-                            pst.setInt(i, (Integer) field.get(objectData));
+                            pst.setObject(i, field.get(objectData));
                         }
 
                         if (fields[i].getType().getName().equals("java.lang.String")){
-                            pst.setString(i, (String) field.get(objectData));
+                            pst.setObject(i, field.get(objectData));
                         }
                     }
                 }
                 pst.executeUpdate();
+                ResultSet rs = pst.getGeneratedKeys();
+
+                if (rs.next()) {
+                    System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    idValue = rs.getInt(1);
+                    System.out.println("ID value: " + idValue);
+                }
                 //connection.commit();
 
             } catch (IllegalAccessException | NoSuchFieldException e) {
@@ -117,16 +128,7 @@ public class JdbcTemplate implements DBService{
                             if (i + 1 == fields.length) {
                                 System.out.println();
 
-                                ResultSet rs = pst1.getGeneratedKeys();
-                                int idValue = 0;
-                                if (rs.next()) {
-                                    idValue = rs.getInt("id");
-                                    System.out.println("ID value: ");
-                                }
-                                //pst1.setInt(i , rs.getInt(1));
-
-
-                                sqlRequest += fieldName + " = " + field1.get(objectData) + " WHERE id = 1";
+                                sqlRequest += fieldName + " = " + field1.get(objectData) + " WHERE id = " + idValue;
                             } else {
                                 sqlRequest += fieldName + " = " + "\'" + field1.get(objectData) + "\'" + ", ";
                             }
@@ -138,7 +140,7 @@ public class JdbcTemplate implements DBService{
             }
             System.out.println(sqlRequest);
 
-            try (PreparedStatement pst = connection.prepareStatement(sqlRequest, Statement.RETURN_GENERATED_KEYS)) {
+            try (PreparedStatement pst = connection.prepareStatement(sqlRequest)) {
                 Savepoint savepoint = connection.setSavepoint("savePoint");
 
                 try {
@@ -156,24 +158,37 @@ public class JdbcTemplate implements DBService{
     }
 
     @Override
-    public <T> T load(int id, T objectData) throws SQLException {
+    public <T> T load(int id, T objectData) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+
         Class clazz = objectData.getClass();
-        Field[] fields = clazz.getDeclaredFields();
-        T loadObject = objectData;
-        if (fields[0].getAnnotation(ID.class) != null) {
+        Constructor constructor = clazz.getConstructor();
+        Field[] objectDataFields = clazz.getDeclaredFields();
+        Object user = constructor.newInstance();
+        Field[] objectFields = user.getClass().getDeclaredFields();
+
+        if (objectDataFields[0].getAnnotation(ID.class) != null) {
             String sqlRequest = "select * from " + clazz.getName().toLowerCase() + " where id = " + id;
 
             try (PreparedStatement pst = connection.prepareStatement(sqlRequest)) {
 
                 try (ResultSet rs = pst.executeQuery()){
+
                     if (rs.next()){
-                        System.out.println(rs.getInt("id"));
-                        System.out.println(rs.getString("name"));
-                        System.out.println(rs.getInt("age"));
+                        int i = 1;
+                        for (Field field : objectFields){
+                            field.setAccessible(true);
+                            field.set(user, rs.getObject(i));
+                            i++;
+                        }
+                        System.out.println(rs.getObject(1));
+                        System.out.println(rs.getString(2));
+                        System.out.println(rs.getInt(3));
                     }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
                 }
             }
         }
-        return loadObject;
+        return (T) user;
     }
 }
