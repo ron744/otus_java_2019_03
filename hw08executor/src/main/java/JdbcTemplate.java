@@ -7,31 +7,35 @@ public class JdbcTemplate implements DBService{
 
     private static final String URL = "jdbc:h2:mem:test";
     private final Connection connection;
-    private int idValue;
 
     public JdbcTemplate() throws SQLException{
         this.connection = DriverManager.getConnection(URL);
         this.connection.setAutoCommit(false);
     }
 
-    @Override
-    public void createTable(Object objectData) throws SQLException {
-
+    private Field[] reflectionHelper(Object objectData){
         Class clazz = objectData.getClass();
         Field[] fields = clazz.getDeclaredFields();
-        if (fields[0].getAnnotation(ID.class) != null) {
+        return fields;
+    }
+
+    @Override
+    public void createTable(Object objectData) throws SQLException {
+        Class clazz = objectData.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        if (checkAvailableID(fields)) {
             String sqlRequest = "create table " + clazz.getName().toLowerCase() + "(";
             for (int i = 0; i < fields.length; i++) {
                 String fieldName = fields[i].getName();
                 String fieldType = "";
 
-                if (fields[i].getAnnotation(ID.class) != null){
-                    fieldType = "int(20) NOT NULL AUTO_INCREMENT ";
+                if (fields[i].isAnnotationPresent(ID.class)){
+                    fieldType = "int(20) NOT NULL AUTO_INCREMENT";
                 }
-                if (fields[i].getAnnotation(TypeString.class) != null){
+                if (fields[i].isAnnotationPresent(TypeString.class)){
                     fieldType = "varchar(100)";
                 }
-                if (fields[i].getAnnotation(TypeInt.class) != null){
+                if (fields[i].isAnnotationPresent(TypeInt.class)){
                     fieldType = "int(10)";
                 }
                 if (i + 1 == fields.length){
@@ -52,11 +56,11 @@ public class JdbcTemplate implements DBService{
     public void insert(Object objectData) throws SQLException{
         Class clazz = objectData.getClass();
         Field[] fields = clazz.getDeclaredFields();
-        if (fields[0].getAnnotation(ID.class) != null) {
+        if (checkAvailableID(fields)) {
             String sqlRequest = "insert into " + clazz.getName().toLowerCase() + "(";
             for (int i = 0; i < fields.length; i++) {
                 String fieldName = fields[i].getName();
-                if (!fieldName.equals("id")){
+                if (!fields[i].isAnnotationPresent(ID.class)){
                     if (i + 1 == fields.length) {
                         sqlRequest += fieldName + ") ";
                     } else {
@@ -78,32 +82,27 @@ public class JdbcTemplate implements DBService{
             try (PreparedStatement pst = connection.prepareStatement(sqlRequest, Statement.RETURN_GENERATED_KEYS)) {
 
                 for (int i = 1; i < fields.length; i++){
-
                     Field field = clazz.getDeclaredField(fields[i].getName());
                     field.setAccessible(true);
-                    if (fields[i].getAnnotation(ID.class) != null){
 
+                    if (fields[i].getType().getName().equals("int")){
+                        pst.setObject(i, field.get(objectData));
+                    }
 
-                    } else {
-                        if (fields[i].getType().getName().equals("int")){
-                            pst.setObject(i, field.get(objectData));
-                        }
-
-                        if (fields[i].getType().getName().equals("java.lang.String")){
-                            pst.setObject(i, field.get(objectData));
-                        }
+                    if (fields[i].getType().getName().equals("java.lang.String")){
+                        pst.setObject(i, field.get(objectData));
                     }
                 }
                 pst.executeUpdate();
                 ResultSet rs = pst.getGeneratedKeys();
-
+                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 if (rs.next()) {
-                    System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    idValue = rs.getInt(1);
-                    System.out.println("ID value: " + idValue);
+                    if (fields[0].getAnnotation(ID.class) != null){
+                        fields[0].setAccessible(true);
+                        fields[0].set(objectData, rs.getInt(1));
+                    }
                 }
-                //connection.commit();
-
+                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             } catch (IllegalAccessException | NoSuchFieldException e) {
                 e.printStackTrace();
             }
@@ -116,19 +115,24 @@ public class JdbcTemplate implements DBService{
         Class clazz = objectData.getClass();
         Field[] fields = clazz.getDeclaredFields();
 
-        if (fields[0].getAnnotation(ID.class) != null) {
+        if (checkAvailableID(fields)) {
             String sqlRequest = "update " + clazz.getName().toLowerCase() + " set ";
-            try (PreparedStatement pst1 = connection.prepareStatement("select * from " + clazz.getName().toLowerCase())) {
                 for (int i = 0; i < fields.length; i++) {
                     String fieldName = fields[i].getName();
                     try {
                         Field field1 = clazz.getDeclaredField(fields[i].getName());
                         field1.setAccessible(true);
-                        if (!fieldName.equals("id")) {
+                        if (!fields[i].isAnnotationPresent(ID.class)) {
                             if (i + 1 == fields.length) {
                                 System.out.println();
+                                sqlRequest += fieldName + " = " + field1.get(objectData);
 
-                                sqlRequest += fieldName + " = " + field1.get(objectData) + " WHERE id = " + idValue;
+                                for (Field field : fields){
+                                    if (field.isAnnotationPresent(ID.class)){
+                                        field.setAccessible(true);
+                                        sqlRequest += " WHERE id = " + field.get(objectData);
+                                    }
+                                }
                             } else {
                                 sqlRequest += fieldName + " = " + "\'" + field1.get(objectData) + "\'" + ", ";
                             }
@@ -137,7 +141,6 @@ public class JdbcTemplate implements DBService{
                         e.printStackTrace();
                     }
                 }
-            }
             System.out.println(sqlRequest);
 
             try (PreparedStatement pst = connection.prepareStatement(sqlRequest)) {
@@ -166,7 +169,7 @@ public class JdbcTemplate implements DBService{
         Object user = constructor.newInstance();
         Field[] objectFields = user.getClass().getDeclaredFields();
 
-        if (objectDataFields[0].getAnnotation(ID.class) != null) {
+        if (checkAvailableID(objectDataFields)) {
             String sqlRequest = "select * from " + clazz.getName().toLowerCase() + " where id = " + id;
 
             try (PreparedStatement pst = connection.prepareStatement(sqlRequest)) {
@@ -190,5 +193,14 @@ public class JdbcTemplate implements DBService{
             }
         }
         return (T) user;
+    }
+
+    private boolean checkAvailableID(Field[] fields){
+        for (Field field : fields){
+            if (field.isAnnotationPresent(ID.class)){
+                return true;
+            }
+        }
+        return false;
     }
 }
