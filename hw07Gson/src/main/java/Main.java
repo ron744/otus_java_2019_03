@@ -12,18 +12,21 @@ public class Main {
         bag.setMassObjects(new Object[]{new String("qwe"), new String("qwe1")});
         List<Integer> list = new ArrayList<Integer>();
         list.add(222);
-        list.add(333);
+        list.add(555);
         bag.setString("stringString");
         bag.setList(list);
+        bag.setInteger(12345);
 
 
         MyGson myGson = new MyGson();
-        myGson.inGson(bag);
-
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(bag);
 
-        System.out.println(json);
+        /*myGson.inGson(bag);
+        String json = gson.toJson(bag);
+        System.out.println(json);*/
+
+        myGson.inGson(1);
+        System.out.println(gson.toJson(1));
 
 
     }

@@ -8,7 +8,11 @@ public class Bag1 {
     private Object[] massObjects;
     private List<Integer> list = new ArrayList<Integer>();
     private String string;
+    private Integer integer;
 
+    public void setInteger(Integer integer) {
+        this.integer = integer;
+    }
 
     public void setString(String string) {
         this.string = string;
