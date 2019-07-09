@@ -1,11 +1,11 @@
 public class User {
 
-    @ID
-    private int id;
-    @TypeString
-    private String name;
     @TypeInt
     private int age;
+    @TypeString
+    private String name;
+    @ID
+    private int id;
 
     public int getId() {
         return id;
