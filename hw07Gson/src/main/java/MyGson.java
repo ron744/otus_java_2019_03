@@ -1,29 +1,104 @@
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.List;
-
 public class MyGson {
 
-    private String generalString;
+    private StringBuilder generalString = new StringBuilder();
 
-    public void inGson(Object objectData){
+
+    public void gGson(Object objectData) throws NoSuchFieldException, IllegalAccessException {
+        generalString.append("{");
+        generalString.append(inGson(objectData));
+
+        generalString.append("}");
+    }
+
+    public StringBuilder inGson(Object objectData) throws NoSuchFieldException, IllegalAccessException {
         Class clazz = objectData.getClass();
-        Field[] fields = clazz.getDeclaredFields();
-        generalString = "{";
-        for (int i = 0; i < fields.length; i++){
+        //System.out.println(clazz.getName());
+
+        if (clazz.getName().equals("java.lang.Character")){
+            System.out.println("Char");
+            //generalString += "\"" + objectData + "\"";
+            generalString.append("\"" + objectData + "\"");
+            return generalString;
+
+        } else if (clazz.getName().equals("java.lang.String")){
+            System.out.println("STRING");
+            //generalString += "\"" + objectData + "\"";
+            generalString.append("\"" + objectData + "\"");
+            return generalString;
+
+        } else if (clazz.getName().equals("java.lang.Integer")){
+            //System.out.println("Integer");
+            //generalString += objectData;
+            generalString.append(objectData);
+            return generalString;
+
+        } else if (clazz.getName().equals("java.lang.Object")){
+            System.out.println("Object");
+            //generalString += objectData;
+            generalString.append(objectData);
+            return generalString;
+
+        } else if (clazz.getName().equals("java.lang.Byte")){
+            System.out.println("Byte");
+            //generalString += objectData;
+            generalString.append(objectData);
+            return generalString;
+
+        } else if (clazz.getName().equals("java.lang.Short")){
+            System.out.println("Short");
+            //generalString += objectData;
+            generalString.append(objectData);
+            return generalString;
+
+        } else if (clazz.getName().equals("java.lang.Long")){
+            System.out.println("Long");
+            //generalString += objectData;
+            generalString.append(objectData);
+            return generalString;
+
+        } else if (clazz.isArray()){
+            //System.out.println("ARRAY");
+            //generalString += "[";
+            generalString.append("[");
+            if (clazz.getTypeName().contains("int")){
+                int[] mass = (int[]) objectData;
+                for (int i = 0; i < mass.length; i++){
+                    inGson(mass[i]);
+                    //generalString = generalString.substring(0, generalString.length() - 1);
+                    generalString.delete(generalString.length() - 1, generalString.length());
+                    if (i != mass.length - 1)
+                        //generalString += ",";
+                        generalString.append(",");
+                    return generalString;
+                }
+            } else if (clazz.getTypeName().contains("String")){
+
+            }
+
+            //sqlRequest = sqlRequest.substring(0, sqlRequest.length() - 1);
+            //generalString += "]";
+            generalString.append("]");
+        } else if (clazz.getName().equals("java.util.Collections$SingletonList")){
+            System.out.println("SingletonList");
+            //generalString += objectData;
+            generalString.append(objectData);
+            return generalString;
+
+        }
+        //generalString = "{";
+        /*for (int i = 0; i < fields.length; i++){
             try {
                 fields[i].setAccessible(true);
                 //System.out.println("fields[i].get(objectData):  " + fields[i].get(objectData));
 {
                     //String podString = fields[i].getType().getSimpleName();
                     if (fields[i].getType().isArray()){
-                        //System.out.println("ARRAY");
+                        System.out.println("ARRAY");
                         //inGson(fields[i]);
                     }
 
                     if (fields[i].getType().getName().equals("java.util.List")){
-                        //System.out.println("LIST");
+                        System.out.println("LIST");
 
                         //generalString += "\"" + fields[i].getName() + "\":{";
                         List<Object> listObjects = (List<Object>) fields[i].get(objectData);
@@ -39,13 +114,13 @@ public class MyGson {
                     //System.out.println(fields[i].getType().getName());
 
                     if (fields[i].getType().getName().equals("java.lang.String")){
-                        //System.out.println("STRING");
+                        System.out.println("STRING");
                         generalString += "\"" + fields[i].getName() + "\"" + ":" + fields[i].get(objectData);
                         checkEndMass(i, fields.length);
                     }
 
                     if (fields[i].getType().getName().equals("java.lang.Object")){
-                        //System.out.println("OBJECT");
+                        System.out.println("OBJECT");
                     }
 
                     if (fields[i].getType().getName().equals("int")){
@@ -63,15 +138,7 @@ public class MyGson {
                         checkEndMass(i, fields.length);
                     }
 
-
-
-
-
-
-
-
-
-                    /*if (podString.contains("String")) {
+                    *//*if (podString.contains("String")) {
                         if (fields[i].getType().isArray()) {
                             generalString += "\"" + fields[i].getName() + "\":{";
                             String[] strings = (String[]) fields[i].get(objectData);
@@ -105,7 +172,7 @@ public class MyGson {
                             generalString += "\"" + listObjects.get(j) + "\"";
                             checkEndMass(j, listObjects.size());
                         }
-                    }*/
+                    }*//*
                     if (i != fields.length -1){
                         //generalString += "},";
                     }
@@ -113,14 +180,9 @@ public class MyGson {
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-        }
-        generalString += "}";
+        }*/
+        //generalString += "}";
         System.out.println("generalString: "+ generalString);
-    }
-
-    public String checkEndMass(int i, int length){
-        if (i != length - 1)
-            return generalString += ",";
-        return "";
+        return null;
     }
 }

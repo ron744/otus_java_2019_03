@@ -2,10 +2,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
         Bag1 bag = new Bag1();
         bag.setI(6);
         bag.setMass(new String[]{"9", "aaa"});
@@ -25,8 +26,8 @@ public class Main {
         String json = gson.toJson(bag);
         System.out.println(json);*/
 
-        myGson.inGson(1);
-        System.out.println(gson.toJson(1));
+        myGson.gGson(new int[] {1, 2, 3});
+        System.out.println(gson.toJson(new int[] {1, 2, 3}));
 
 
     }
