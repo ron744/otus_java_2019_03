@@ -17,6 +17,7 @@
         <module>hw06ATMDepartment</module>
         <module>hw07Gson</module>
         <module>hw08executor</module>
+        <module>hw09Hiber</module>
     </modules>
 
 
