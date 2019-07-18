@@ -19,7 +19,8 @@ public class HibernateDemo {
 
         Metadata metadata = new MetadataSources(serviceRegistry)
                 .addAnnotatedClass(User.class)
-                //.addAnnotatedClass(AddressDataSet.class)
+                .addAnnotatedClass(AddressDataSet.class)
+                .addAnnotatedClass(Phone.class)
                 .getMetadataBuilder()
                 .build();
 
@@ -31,6 +32,15 @@ public class HibernateDemo {
             session.beginTransaction();
 
             User user = new User();
+            user.setName("Tolik");
+            user.setAge(112);
+            session.save(user);
+
+            System.out.println(user);
+            session.getTransaction().commit();
+
+            User selected = session.get(User.class, user.getId());
+            System.out.println(selected);
         }
     }
 

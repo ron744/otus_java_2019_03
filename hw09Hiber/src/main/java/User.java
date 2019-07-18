@@ -1,19 +1,26 @@
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "users")
+@Entity(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private int id;
     private String name;
     private int age;
 
-/*    @OneToOne (optional=false, cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id")
-    private List<AddressDataSet> addressDataSet;*/
+    @OneToOne(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "addresses")
+    private AddressDataSet address;
+
+
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Phone> phones = new ArrayList<>();
 
     public int getId() {
         return id;
