@@ -31,17 +31,30 @@ public class HibernateDemo {
         try(Session session = sessionfactory.openSession()){
             session.beginTransaction();
 
+            Phone phone1 = new Phone();
+            phone1.setNumber(123);
+            Phone phone2 = new Phone();
+            phone2.setNumber(456);
+
+            AddressDataSet address = new AddressDataSet();
+            address.setStreet("Arbat");
+
             User user = new User();
             user.setName("Tolik");
-            user.setAge(112);
+            user.setAge(46);
+            user.setAddress(address);
+            user.getPhones().add(phone1);
+            user.getPhones().add(phone2);
+
             session.save(user);
+            session.save(phone1);
+            session.save(phone2);
+            session.save(address);
 
-            System.out.println(user);
             session.getTransaction().commit();
-
-            User selected = session.get(User.class, user.getId());
-            System.out.println(selected);
+            System.out.println(user.getAddress().getStreet());
+            //User selected = session.get(User.class, user.getId());
+            //System.out.println(selected);
         }
     }
-
 }

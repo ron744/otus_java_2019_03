@@ -1,19 +1,14 @@
 import javax.persistence.*;
-import java.io.Serializable;
 
-@Entity(name = "addresses")
-//(name="addresses")
-public class AddressDataSet implements Serializable {
+@Entity
+public class AddressDataSet {
     private String street;
 
     @Id
-    @GeneratedValue//(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "users")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private User user;
 
     public String getStreet() {
@@ -22,6 +17,14 @@ public class AddressDataSet implements Serializable {
 
     public void setStreet(String street) {
         this.street = street;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     AddressDataSet(){}

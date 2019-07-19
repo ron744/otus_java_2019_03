@@ -1,26 +1,30 @@
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "users")
+@Entity
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
     private int id;
     private String name;
     private int age;
 
-    @OneToOne(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @MapsId
-    @JoinColumn(name = "addresses")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private AddressDataSet address;
 
 
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany
     private List<Phone> phones = new ArrayList<>();
+
+    public List<Phone> getPhones() {
+        return phones;
+    }
+
+    public void setPhones(List<Phone> phones) {
+        this.phones = phones;
+    }
 
     public int getId() {
         return id;
@@ -40,6 +44,14 @@ public class User {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public AddressDataSet getAddress() {
+        return address;
+    }
+
+    public void setAddress(AddressDataSet address) {
+        this.address = address;
     }
 
     public User(String name, int age) {
