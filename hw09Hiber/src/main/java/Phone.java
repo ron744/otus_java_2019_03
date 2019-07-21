@@ -7,7 +7,7 @@ public class Phone {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @ManyToOne//(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private User user;
     private int number;
 

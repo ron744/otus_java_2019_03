@@ -51,8 +51,11 @@ public class HibernateDemo {
             session.save(phone2);
             session.save(address);
 
+            System.out.println(session.get(User.class, 1).getAddress().getStreet());
+
             session.getTransaction().commit();
             System.out.println(user.getAddress().getStreet());
+
             //User selected = session.get(User.class, user.getId());
             //System.out.println(selected);
         }

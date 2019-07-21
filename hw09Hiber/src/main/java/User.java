@@ -15,7 +15,7 @@ public class User {
     private AddressDataSet address;
 
 
-    @OneToMany
+    @OneToMany//(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Phone> phones = new ArrayList<>();
 
     public List<Phone> getPhones() {
