@@ -1,0 +1,25 @@
+<html xmlns="http://www.w3.org/1999/xhtml" content="text/html;">
+<head>
+    <title>Info Page</title>
+    <script type="text/JavaScript">
+        function getDataFromServer() {
+            fetch('http://localhost:8080/' + new Date())
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (dataSrv) {
+                    document.getElementById("dataHolder").innerHTML = dataSrv;
+                })
+        }
+    </script>
+</head>
+<body onload="getDataFromServer();">
+<h1>AuthenticationForm</h1>
+<div id="dataHolder"></div>
+
+<form method="get" action="privateInfo">
+    <input type="submit" value="Enter">
+</form>
+
+</body>
+</html>
