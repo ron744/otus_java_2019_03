@@ -1,3 +1,8 @@
+package servlet;
+
+import main.User;
+import main.UserService;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -6,9 +11,13 @@ import java.io.PrintWriter;
 
 import java.util.List;
 
-public class UserInfo extends HttpServlet {
+public class UserInfoServlet extends HttpServlet {
 
-    private UserService userService = new UserService();
+    private UserService userService;
+
+    public UserInfoServlet(UserService userService){
+        this.userService = userService;
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -23,7 +32,7 @@ public class UserInfo extends HttpServlet {
         List<User> users = userService.getAll();
         printWriter.println(
                 "<table border=\"1\">\n" +
-                "    <thead>User list</thead>\n" +
+                "    <thead>main.User list</thead>\n" +
                 "<tr>" +
                         "<td>UserName</td>" +
                         "<td>Age</td>" +

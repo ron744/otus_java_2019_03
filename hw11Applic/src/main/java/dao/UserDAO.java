@@ -1,3 +1,7 @@
+package dao;
+
+import main.User;
+
 import java.sql.SQLException;
 import java.util.List;
 

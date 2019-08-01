@@ -1,3 +1,6 @@
+package main;
+
+import dao.UserDAO;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -5,16 +8,14 @@ import java.util.List;
 
 public class UserService extends SessionUtil implements UserDAO {
 
-    //private List<User> userList;
-
     @Override
     public void add(User user){
-        //userList.add(user);
         System.out.println("add");
         openTransactionSession();
 
         Session session = getSession();
-        session.save(user);
+            session.save(user);
+
         System.out.println(user.getName() + " " + user.getAge());
 
         closeTransactionSession();
@@ -25,10 +26,10 @@ public class UserService extends SessionUtil implements UserDAO {
         System.out.println("getAll");
         openTransactionSession();
 
-        String sql = "SELECT * FROM User";
+        String hql = "FROM User";
 
         Session session = getSession();
-        Query query = session.createNativeQuery(sql).addEntity(User.class);
+        Query query = session.createQuery(hql);
         List<User> userList = query.list();
 
         closeTransactionSession();

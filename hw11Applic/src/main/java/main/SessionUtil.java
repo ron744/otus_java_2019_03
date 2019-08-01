@@ -1,3 +1,5 @@
+package main;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -15,7 +17,7 @@ public class SessionUtil {
     }
 
     public Session openSession(){
-        return Hiber.getSessionFactory().openSession();
+        return HibernateUtils.getSessionFactory().openSession();
     }
 
     public Session openTransactionSession(){

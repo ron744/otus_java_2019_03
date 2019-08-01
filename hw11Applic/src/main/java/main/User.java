@@ -1,3 +1,5 @@
+package main;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -37,7 +39,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "main.User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +

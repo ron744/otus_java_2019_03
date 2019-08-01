@@ -1,3 +1,6 @@
+package web;
+
+import main.UserService;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
@@ -10,20 +13,18 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Constraint;
+import servlet.PrivateInfoServlet;
+import servlet.UserInfoServlet;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 
-public class Appl {
+public class JettyWebServerApplication {
     private final static int PORT = 8080;
 
-    public static void main(String[] args) throws Exception {
-        new Appl().start();
-    }
-
-    private void start() throws Exception{
+    public void start() throws Exception{
         Server server = createServer(PORT);
         server.start();
         server.join();
@@ -31,9 +32,11 @@ public class Appl {
 
     public Server createServer(int port) throws MalformedURLException {
 
+        UserService userService = new UserService();
+
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        contextHandler.addServlet(new ServletHolder(new PrivateInfo()), "/privateInfo");
-        contextHandler.addServlet(new ServletHolder(new UserInfo()), "/userInfo");
+        contextHandler.addServlet(new ServletHolder(new PrivateInfoServlet()), "/privateInfo");
+        contextHandler.addServlet(new ServletHolder(new UserInfoServlet(userService)), "/userInfo");
 
         Server server = new Server(port);
         server.setHandler(new HandlerList(contextHandler));
@@ -49,7 +52,7 @@ public class Appl {
         resourceHandler.setDirectoriesListed(false);
         resourceHandler.setWelcomeFiles(new String[]{"info.html"});
 
-        URL fileDir = Appl.class.getClassLoader().getResource("static");
+        URL fileDir = JettyWebServerApplication.class.getClassLoader().getResource("static");
         if (fileDir == null) {
             throw new RuntimeException("File Directory not found");
         }
@@ -78,7 +81,7 @@ public class Appl {
         }
         if (propFile == null) {
             System.out.println("local realm config not found, looking into Resources");
-            propFile = Appl.class.getClassLoader().getResource("realm.properties");
+            propFile = JettyWebServerApplication.class.getClassLoader().getResource("realm.properties");
         }
 
         if (propFile == null) {
