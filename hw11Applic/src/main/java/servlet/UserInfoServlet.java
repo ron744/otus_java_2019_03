@@ -1,15 +1,17 @@
 package servlet;
 
+import main.ConfigurationFreemaker;
 import main.User;
 import main.UserService;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserInfoServlet extends HttpServlet {
 
@@ -22,32 +24,19 @@ public class UserInfoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String resultAsString = "<p>PublicInfo Page Get</p>";
+        String resultAsString = "<p>UserInfoServlet Get</p>";
         response.setContentType("text/html");
-
         response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter printWriter = response.getWriter();
         printWriter.print(resultAsString);
 
-        List<User> users = userService.getAll();
-        printWriter.println(
-                "<table border=\"1\">\n" +
-                "    <thead>main.User list</thead>\n" +
-                "<tr>" +
-                        "<td>UserName</td>" +
-                        "<td>Age</td>" +
-                "</tr>");
+        Map root= new HashMap();
+        List<User> userList = userService.getAll();
+        root.put("users", userList);
 
-        for (User user : users){
-            printWriter.println(
-                    "<tr>" +
-                    "<td>" + user.getName() + "</td>" +
-                    "<td>" + user.getAge() + "</td>" +
-                    "</tr>");
-        }
-        printWriter.println(
+        ConfigurationFreemaker configurationFreemaker = new ConfigurationFreemaker();
+        configurationFreemaker.Configurate(root, "getUserTable.ftl", response);
 
-                "</table>-->");
         printWriter.println("<a href='javascript:history.back();'>Back</a>");
         printWriter.flush();
     }
@@ -55,7 +44,7 @@ public class UserInfoServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String resultAsString = "<p>PublicInfo Page Post</p>";
+        String resultAsString = "<p>UserInfoServlet Post</p>";
         String name = request.getParameter("name");
         int age = Integer.parseInt(request.getParameter("age"));
         response.setContentType("text/html");

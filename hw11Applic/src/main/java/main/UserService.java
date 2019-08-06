@@ -6,33 +6,44 @@ import org.hibernate.query.Query;
 
 import java.util.List;
 
-public class UserService extends SessionUtil implements UserDAO {
+public class UserService implements UserDAO {
+
+    public Session session;
 
     @Override
     public void add(User user){
         System.out.println("add");
-        openTransactionSession();
+        session = HibernateUtils.getSessionFactory().openSession();
+        session.beginTransaction();
 
-        Session session = getSession();
+        try {
             session.save(user);
+            session.getTransaction().commit();
+        }catch(Exception e){
+            session.getTransaction().rollback();
+        }
+        session.close();
 
         System.out.println(user.getName() + " " + user.getAge());
-
-        closeTransactionSession();
     }
 
     @Override
     public List<User> getAll(){
         System.out.println("getAll");
-        openTransactionSession();
-
+        List<User> userList = null;
+        session = HibernateUtils.getSessionFactory().openSession();
+        session.beginTransaction();
         String hql = "FROM User";
 
-        Session session = getSession();
-        Query query = session.createQuery(hql);
-        List<User> userList = query.list();
+        try {
+            Query query = session.createQuery(hql);
+            userList = query.list();
+            session.getTransaction().commit();
+        }catch(Exception e){
+            session.getTransaction().rollback();
+        }
+        session.close();
 
-        closeTransactionSession();
         return userList;
     }
 }

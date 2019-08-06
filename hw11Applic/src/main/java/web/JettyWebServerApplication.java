@@ -17,6 +17,7 @@ import servlet.PrivateInfoServlet;
 import servlet.UserInfoServlet;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -24,13 +25,14 @@ import java.util.Collections;
 public class JettyWebServerApplication {
     private final static int PORT = 8080;
 
+
     public void start() throws Exception{
         Server server = createServer(PORT);
         server.start();
         server.join();
     }
 
-    public Server createServer(int port) throws MalformedURLException {
+    public Server createServer(int port) throws IOException {
 
         UserService userService = new UserService();
 
@@ -71,7 +73,6 @@ public class JettyWebServerApplication {
         mapping.setConstraint(constraint);
 
         ConstraintSecurityHandler security = new ConstraintSecurityHandler();
-        //как декодировать стороку с юзером:паролем https://www.base64decode.org/
         security.setAuthenticator(new BasicAuthenticator());
 
         URL propFile = null;
