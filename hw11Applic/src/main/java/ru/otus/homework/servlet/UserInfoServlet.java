@@ -1,8 +1,8 @@
-package servlet;
+package ru.otus.homework.servlet;
 
-import main.ConfigurationFreemaker;
-import main.User;
-import main.UserService;
+import ru.otus.homework.configurationForm.ConfigurationFreemaker;
+import ru.otus.homework.model.User;
+import ru.otus.homework.services.UserServiceImpl;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,9 +15,9 @@ import java.util.Map;
 
 public class UserInfoServlet extends HttpServlet {
 
-    private UserService userService;
+    private UserServiceImpl userService;
 
-    public UserInfoServlet(UserService userService){
+    public UserInfoServlet(UserServiceImpl userService){
         this.userService = userService;
     }
 
@@ -35,9 +35,8 @@ public class UserInfoServlet extends HttpServlet {
         root.put("users", userList);
 
         ConfigurationFreemaker configurationFreemaker = new ConfigurationFreemaker();
-        configurationFreemaker.Configurate(root, "getUserTable.ftl", response);
+        configurationFreemaker.templateProcessing(root, "getUserTable.ftl", response);
 
-        printWriter.println("<a href='javascript:history.back();'>Back</a>");
         printWriter.flush();
     }
 

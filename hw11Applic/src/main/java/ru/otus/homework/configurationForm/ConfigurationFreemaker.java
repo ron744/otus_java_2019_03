@@ -1,4 +1,4 @@
-package main;
+package ru.otus.homework.configurationForm;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -13,11 +13,11 @@ import java.util.Map;
 
 public class ConfigurationFreemaker {
 
-    private String templateDir = "hw11Applic/web/WEB-INF/templates";
+    private String templateDir = "hw11Applic/src/main/resources/templates";
+    private Configuration cfg;
 
-    public void Configurate(Map root, String templateName, HttpServletResponse response) throws IOException {
-
-        Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
+    public ConfigurationFreemaker(){
+        cfg = new Configuration(Configuration.VERSION_2_3_27);
 
         try {
             cfg.setDirectoryForTemplateLoading(new File(templateDir));
@@ -29,7 +29,9 @@ public class ConfigurationFreemaker {
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         cfg.setLogTemplateExceptions(false);
         cfg.setWrapUncheckedExceptions(true);
+    }
 
+    public void templateProcessing(Map root, String templateName, HttpServletResponse response) throws IOException {
         Template template = null;
         try {
             template = cfg.getTemplate(templateName);

@@ -1,6 +1,5 @@
-package web;
+package ru.otus.homework.web;
 
-import main.UserService;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
@@ -13,8 +12,9 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Constraint;
-import servlet.PrivateInfoServlet;
-import servlet.UserInfoServlet;
+import ru.otus.homework.services.UserServiceImpl;
+import ru.otus.homework.servlet.PrivateInfoServlet;
+import ru.otus.homework.servlet.UserInfoServlet;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class JettyWebServerApplication {
 
     public Server createServer(int port) throws IOException {
 
-        UserService userService = new UserService();
+        UserServiceImpl userService = new UserServiceImpl();
 
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.addServlet(new ServletHolder(new PrivateInfoServlet()), "/privateInfo");

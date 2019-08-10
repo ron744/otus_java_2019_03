@@ -19,6 +19,7 @@
         </tr>
         </#list>
     </table>
+    <a href='javascript:history.back();'>Back</a>
 </div>
 </body>
 </html>

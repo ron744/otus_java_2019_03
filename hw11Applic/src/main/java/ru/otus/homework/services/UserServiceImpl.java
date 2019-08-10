@@ -1,19 +1,21 @@
-package main;
+package ru.otus.homework.services;
 
-import dao.UserDAO;
+import ru.otus.homework.model.User;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.util.List;
 
-public class UserService implements UserDAO {
+public class UserServiceImpl implements UserService {
 
-    public Session session;
+    private Session session;
+    private HibernateUtils hibernateUtils = new HibernateUtils();
 
     @Override
     public void add(User user){
         System.out.println("add");
-        session = HibernateUtils.getSessionFactory().openSession();
+        //session = HibernateUtils.getSessionFactory().openSession();
+        session = hibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
 
         try {
@@ -31,7 +33,8 @@ public class UserService implements UserDAO {
     public List<User> getAll(){
         System.out.println("getAll");
         List<User> userList = null;
-        session = HibernateUtils.getSessionFactory().openSession();
+        //session = HibernateUtils.getSessionFactory().openSession();
+        session = hibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
         String hql = "FROM User";
 

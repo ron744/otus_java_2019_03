@@ -1,8 +1,8 @@
-package main;
+package ru.otus.homework;
 
-import web.JettyWebServerApplication;
+import ru.otus.homework.web.JettyWebServerApplication;
 
-public class main {
+public class Main {
     public static void main(String[] args) throws Exception {
         new JettyWebServerApplication().start();
     }

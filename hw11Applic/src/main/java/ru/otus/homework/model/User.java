@@ -1,4 +1,4 @@
-package main;
+package ru.otus.homework.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,7 +39,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "main.User{" +
+        return "ru.otus.homework.model.User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +

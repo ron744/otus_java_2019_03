@@ -1,6 +1,6 @@
-package servlet;
+package ru.otus.homework.servlet;
 
-import main.ConfigurationFreemaker;
+import ru.otus.homework.configurationForm.ConfigurationFreemaker;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +24,7 @@ public class PrivateInfoServlet extends HttpServlet {
         root.put("", "");
 
         ConfigurationFreemaker configurationFreemaker = new ConfigurationFreemaker();
-        configurationFreemaker.Configurate(root, "setUser.tfl", response);
+        configurationFreemaker.templateProcessing(root, "setUser.tfl", response);
 
         printWriter.println("<a href='javascript:history.back();'>Back</a>");
         printWriter.flush();
