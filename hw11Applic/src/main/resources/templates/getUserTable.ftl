@@ -4,8 +4,8 @@
     <title>UserInfo</title>
 </head>
 <body>
-<#--<a href="addPerson">Add User</a>-->
-<br><br>
+<p>UsersTable</p>
+<br>
 <div>
     <table border="1">
         <tr>

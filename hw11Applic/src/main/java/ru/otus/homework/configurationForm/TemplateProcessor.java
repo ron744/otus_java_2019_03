@@ -4,27 +4,28 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import org.eclipse.jetty.xml.ConfigurationProcessor;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
-public class ConfigurationFreemaker {
+public class TemplateProcessor {
 
-    private String templateDir = "hw11Applic/src/main/resources/templates";
+    //private String templateDir = "hw11Applic/src/main/resources/templates";
     private Configuration cfg;
 
-    public ConfigurationFreemaker(){
+    public TemplateProcessor(){
         cfg = new Configuration(Configuration.VERSION_2_3_27);
+        cfg.setClassForTemplateLoading(TemplateProcessor.class, "/templates");
 
-        try {
-            cfg.setDirectoryForTemplateLoading(new File(templateDir));
+        /*try {
+            cfg.setDirectoryForTemplateLoading(TemplateProcessor.class, "hw11Applic/src/main/resources/templates);
         } catch (
                 IOException e) {
             e.printStackTrace();
-        }
+        }*/
         cfg.setDefaultEncoding("UTF-8");
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         cfg.setLogTemplateExceptions(false);
