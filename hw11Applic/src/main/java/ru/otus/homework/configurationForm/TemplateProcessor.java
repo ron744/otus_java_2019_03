@@ -4,7 +4,6 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
-import org.eclipse.jetty.xml.ConfigurationProcessor;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -13,19 +12,12 @@ import java.util.Map;
 
 public class TemplateProcessor {
 
-    //private String templateDir = "hw11Applic/src/main/resources/templates";
+    private final String PATHTOTEMPLATES = "/templates";
     private Configuration cfg;
 
     public TemplateProcessor(){
         cfg = new Configuration(Configuration.VERSION_2_3_27);
-        cfg.setClassForTemplateLoading(TemplateProcessor.class, "/templates");
-
-        /*try {
-            cfg.setDirectoryForTemplateLoading(TemplateProcessor.class, "hw11Applic/src/main/resources/templates);
-        } catch (
-                IOException e) {
-            e.printStackTrace();
-        }*/
+        cfg.setClassForTemplateLoading(TemplateProcessor.class, PATHTOTEMPLATES);
         cfg.setDefaultEncoding("UTF-8");
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         cfg.setLogTemplateExceptions(false);

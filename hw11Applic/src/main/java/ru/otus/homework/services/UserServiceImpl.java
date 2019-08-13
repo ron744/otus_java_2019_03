@@ -9,12 +9,14 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private Session session;
-    private HibernateUtils hibernateUtils = new HibernateUtils();
+    private final HibernateUtils hibernateUtils;
+    public UserServiceImpl(HibernateUtils hibernateUtils){
+        this.hibernateUtils = hibernateUtils;
+    }
 
     @Override
     public void add(User user){
         System.out.println("add");
-        //session = HibernateUtils.getSessionFactory().openSession();
         session = hibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
 
@@ -33,7 +35,6 @@ public class UserServiceImpl implements UserService {
     public List<User> getAll(){
         System.out.println("getAll");
         List<User> userList = null;
-        //session = HibernateUtils.getSessionFactory().openSession();
         session = hibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
         String hql = "FROM User";

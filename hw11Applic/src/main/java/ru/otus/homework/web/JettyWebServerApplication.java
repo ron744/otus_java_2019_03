@@ -12,6 +12,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Constraint;
+import ru.otus.homework.services.HibernateUtils;
 import ru.otus.homework.services.UserServiceImpl;
 import ru.otus.homework.servlet.PrivateInfoServlet;
 import ru.otus.homework.servlet.UserInfoServlet;
@@ -35,7 +36,7 @@ public class JettyWebServerApplication {
 
     public Server createServer(int port) throws IOException {
 
-        UserServiceImpl userService = new UserServiceImpl();
+        UserServiceImpl userService = new UserServiceImpl(new HibernateUtils());
 
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.addServlet(new ServletHolder(new PrivateInfoServlet()), "/privateInfo");

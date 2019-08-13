@@ -1,18 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" content="text/html;">
 <head>
     <title>Info Page</title>
-    <script type="text/JavaScript">
-        var url = 'http://localhost:8080/';
-        function getDataFromServer() {
-            fetch(url + new Date())
-                .then(function (response) {
-                    return response.json();
-                })
-                .then(function (dataSrv) {
-                    document.getElementById("dataHolder").innerHTML = dataSrv;
-                })
-        }
-    </script>
 </head>
 <body onload="getDataFromServer();">
 <h1>AuthenticationForm</h1>
