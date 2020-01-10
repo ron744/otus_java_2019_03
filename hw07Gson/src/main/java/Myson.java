@@ -1,6 +1,7 @@
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Myson {
@@ -12,7 +13,7 @@ public class Myson {
             return null;
 
         Class clazz = object.getClass();
-//        System.out.println(clazz.getSimpleName());
+//        System.out.println(clazz.getName());
 
         if (clazz.isArray()){
             int length = Array.getLength(object);
@@ -25,8 +26,8 @@ public class Myson {
                     string += ",";
             }
             string += "]";
-        } else if (clazz.getSimpleName().equals("ArrayList")) {
-            List<Object> listObjects = (ArrayList<Object>) object;
+        } else if (/*clazz.getName().equals("java.util.ArrayList")*/Collection.class.isAssignableFrom(clazz)) {
+            List<Object> listObjects = (List<Object>) object;
             int length = listObjects.size();
             string += "[";
             for (int i = 0; i < length; i++) {
@@ -36,21 +37,21 @@ public class Myson {
             }
             string += "]";
 
-        } else if (object.getClass().getSimpleName().equals("String")) {
+        } else if (object instanceof String) {
             string += "\"" + object + "\"";
-        } else if (object.getClass().getSimpleName().equals("Byte")) {
+        } else if (object instanceof Byte) {
             string += "" + object + "";
-        } else if (object.getClass().getSimpleName().equals("Short")) {
+        } else if (object instanceof Short) {
             string += "" + object + "";
-        } else if (object.getClass().getSimpleName().equals("Integer")) {
+        } else if (object instanceof Integer) {
             string += "" + object + "";
-        } else if (object.getClass().getSimpleName().equals("Long")) {
+        } else if (object instanceof Long) {
             string += "" + object + "";
-        } else if (object.getClass().getSimpleName().equals("Double")) {
+        } else if (object instanceof Double) {
             string += "" + object + "";
-        } else if (object.getClass().getSimpleName().equals("Float")) {
+        } else if (object instanceof Float) {
             string += "" + object + "";
-        } else if (object.getClass().getSimpleName().equals("Character")) {
+        } else if (object instanceof Character) {
             string += "\"" + object + "\"";
         }
         else {

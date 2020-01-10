@@ -1,5 +1,6 @@
 import com.google.gson.Gson;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class GsonDemo {
@@ -21,7 +22,6 @@ public class GsonDemo {
 
         Gson gson = new Gson();
         Bag obj2 = gson.fromJson(json1, Bag.class);
-        System.out.println(obj1.equals(obj2));
         System.out.println(obj2);
 //        String json2 = gson.toJson(obj1);
 //        System.out.println(json2);
