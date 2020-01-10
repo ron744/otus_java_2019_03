@@ -1,8 +1,6 @@
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class Myson {
 
@@ -26,15 +24,25 @@ public class Myson {
                     string += ",";
             }
             string += "]";
-        } else if (/*clazz.getName().equals("java.util.ArrayList")*/Collection.class.isAssignableFrom(clazz)) {
-            List<Object> listObjects = (List<Object>) object;
-            int length = listObjects.size();
+        } else if (Collection.class.isAssignableFrom(clazz)) {
+//            List<Object> listObjects = (List<Object>) object;
             string += "[";
-            for (int i = 0; i < length; i++) {
-                createMyson(listObjects.get(i));
-                if (i < length - 1)
+//            for (int i = 0; i < length; i++) {
+//                createMyson(listObjects.get(i));
+//                if (i < length - 1)
+//                    string += ",";
+//            }
+            Iterator<Object> iterator = ((Collection<Object>) object).iterator();
+            int length = ((Collection<Object>) object).size();
+            int i = 0;
+            while (iterator.hasNext()){
+                createMyson(iterator.next());
+                if (i < length - 1) {
                     string += ",";
+                    i++;
+                }
             }
+
             string += "]";
 
         } else if (object instanceof String) {
