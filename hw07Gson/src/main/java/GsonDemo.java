@@ -18,7 +18,10 @@ public class GsonDemo {
 
         Myson demo = new Myson();
         String json1 = demo.createMyson(obj1);
-        System.out.println(json1);
+        System.out.println("json1: " + json1.getClass());
+
+        String json2 = demo.createMyson(obj1);
+        System.out.println("json2: " + json2);
 
         Gson gson = new Gson();
         Bag obj2 = gson.fromJson(json1, Bag.class);
