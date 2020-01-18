@@ -53,18 +53,21 @@ public class GCDemo {
                     String gcCause = info.getGcCause();
 
                     long startTime = info.getGcInfo().getStartTime();
+                    long endTime = info.getGcInfo().getEndTime();
                     long duration = info.getGcInfo().getDuration();
                     sumDuration.addAndGet(duration);
 
                     infoString.set(info.getGcName() + " " + "sumDuration: " + sumDuration + " count: " + count);
                     gcName.set(info.getGcName());
 
-                    System.out.println("start:" + startTime + " Name:" + gcName + ", action:" + gcAction + ", gcCause:" + gcCause + "(" + duration + " ms)"
-                            + " sumDuration: " + sumDuration + " count: " + count);
+                    System.out.println("endTime:" + endTime + " Name:" + gcName + ", action:" + gcAction + ", gcCause:" + gcCause + "(" + duration + " ms)"
+                            + " sumDuration:" + sumDuration + " count:" + count);
+//                    System.out.println("info1:" + info.getGcInfo().getMemoryUsageBeforeGc());
+//                    System.out.println("info2:" + info.getGcInfo().getMemoryUsageAfterGc() + "\n\n");
                     count.getAndIncrement();
 
                     try {
-                        Files.write(Paths.get("C:\\Serial.txt"), infoString.get().getBytes());
+                        Files.write(Paths.get("C:\\G1.txt"), infoString.get().getBytes());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
